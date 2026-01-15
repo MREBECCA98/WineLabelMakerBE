@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WineLabelMakerBE.Models.Data;
+using WineLabelMakerBE.Services;
+using WineLabelMakerBE.Services.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +13,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(
         builder.Configuration.GetConnectionString("DefaultConnection"))
     );
 
-
+//Iniezione dei service
+builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 
 
 builder.Services.AddControllers();
