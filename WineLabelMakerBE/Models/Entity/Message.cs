@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 //Tabella messaggi per poter dialogare tra utente e admin riguardo una specifica richiesta
@@ -29,8 +28,8 @@ namespace WineLabelMakerBE.Models.Entity
 
         //FK User
         [Required]
-        public string IdUser { get; set; }
-
-        public IdentityUser User { get; set; }
+        public string UserId { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public ApplicationUser User { get; set; }
     }
 }

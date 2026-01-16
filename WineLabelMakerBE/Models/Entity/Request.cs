@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 //Tabella delle richieste fatte dagli utenti per la creazione di etichette di vino
@@ -30,7 +29,7 @@ namespace WineLabelMakerBE.Models.Entity
         [Required]
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
 
         //Collezione di messaggi associati alla richiesta
         public ICollection<Message> Messages { get; set; } = new List<Message>();

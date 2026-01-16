@@ -64,7 +64,11 @@ namespace WineLabelMakerBE.Services
             await _context.Requests.AddAsync(request);
             await _context.SaveChangesAsync();
 
-            return request;
+            var savedRequest = await _context.Requests
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.IdRequest == request.IdRequest);
+
+            return savedRequest;
         }
 
         //SAVE FOR UPDATE

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using WineLabelMakerBE.Models.Entity;
 
 //I DTO (Data Transfer Object) vengono utilizzati per trasferire i dati tra client e server
 //Vengono utilizzati per esporre solo i dati necessari per una determinata operazione,
@@ -26,7 +25,7 @@ namespace WineLabelMakerBE.Models.DTOs.Requests
         public string Description { get; set; }
 
         [Required]
-        public RequestStatus Status { get; set; }
+        public string Status { get; set; }
 
         [Required]
         public DateTime CreatedAt { get; set; }

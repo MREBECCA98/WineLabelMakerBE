@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WineLabelMakerBE.Models.DTOs.Requests;
-using WineLabelMakerBE.Models.Entity;
 using WineLabelMakerBE.Services.Interface;
 
 namespace WineLabelMakerBE.Controllers
@@ -27,7 +26,7 @@ namespace WineLabelMakerBE.Controllers
                 {
                     IdRequest = r.IdRequest,
                     Description = r.Description,
-                    Status = r.Status,
+                    Status = r.Status.ToString(),
                     CreatedAt = r.CreatedAt,
                     UserName = r.User.UserName,
                     UserEmail = r.User.Email
@@ -60,7 +59,7 @@ namespace WineLabelMakerBE.Controllers
                 {
                     IdRequest = request.IdRequest,
                     Description = request.Description,
-                    Status = request.Status,
+                    Status = request.Status.ToString(),
                     CreatedAt = request.CreatedAt,
                     UserName = request.User.UserName,
                     UserEmail = request.User.Email
@@ -86,7 +85,7 @@ namespace WineLabelMakerBE.Controllers
                 {
                     IdRequest = r.IdRequest,
                     Description = r.Description,
-                    Status = r.Status,
+                    Status = r.Status.ToString(),
                     CreatedAt = r.CreatedAt,
                     UserName = r.User.UserName,
                     UserEmail = r.User.Email
@@ -101,20 +100,27 @@ namespace WineLabelMakerBE.Controllers
             }
         }
 
+
         //POST CREATE REQUEST
         [HttpPost("createRequest")]
         public async Task<IActionResult> CreateRequest(CreateRequestDto requestDto)
         {
             try
             {
-                string userId = "test-user-id";
+                string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized("Utente non autenticato");
+                }
+
                 var createdRequest = await _requestService.CreateRequestAsync(requestDto, userId);
 
                 var resultDto = new GetRequestDto
                 {
                     IdRequest = createdRequest.IdRequest,
                     Description = createdRequest.Description,
-                    Status = createdRequest.Status,
+                    Status = createdRequest.Status.ToString(),
                     CreatedAt = createdRequest.CreatedAt,
                     UserName = createdRequest.User.UserName,
                     UserEmail = createdRequest.User.Email
@@ -129,17 +135,17 @@ namespace WineLabelMakerBE.Controllers
             }
         }
 
+        //AGGIUNGERE AUTORIZZAZIONE RUOLI SOLO PER I CLIENT
         //UPDATE CLIENT DESCRIPTION
         [HttpPut("updateClient/{id:guid}")]
         public async Task<IActionResult> UpdateRequestDescription(Guid id, UpdateRequestDescriptionDto descriptionDto)
         {
-
             try
             {
                 if (descriptionDto == null || string.IsNullOrWhiteSpace(descriptionDto.Description))
                     return BadRequest("Descrizione non valida");
 
-                var request = await _requestService.GetRequestsByIdAsync(id);
+                var request = await _requestService.GetRequestsById(id);
                 if (request == null)
                     return NotFound("Richiesta non trovata");
 
@@ -147,44 +153,70 @@ namespace WineLabelMakerBE.Controllers
                 request.UpdatedAt = DateTime.UtcNow;
 
                 bool saved = await _requestService.Save();
-                return saved ? Ok(request) : BadRequest("Impossibile aggiornare la richiesta");
+
+                if (!saved)
+                    return BadRequest("Impossibile aggiornare la richiesta");
+
+                var resultDto = new GetRequestDto
+                {
+                    IdRequest = request.IdRequest,
+                    Description = request.Description,
+                    Status = request.Status.ToString(),
+                    CreatedAt = request.CreatedAt,
+                    UserName = request.User.UserName,
+                    UserEmail = request.User.Email
+                };
+
+                return Ok(resultDto);
             }
             catch (Exception ex)
             {
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError, $"Errore interno: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Errore interno: {ex.Message}");
             }
         }
+
 
         //AGGIUNGERE AUTORIZZAZIONE RUOLI SOLO PER GLI ADMIN
         //UPDATE ADMIN STATUS
         [HttpPut("updateAdmin/{id:guid}")]
-        public async Task<IActionResult> UpdateRequestStatus(Guid id, UpdateRequestStatusDto StatusDto)
+        public async Task<IActionResult> UpdateRequestStatus(Guid id, UpdateRequestStatusDto statusDto)
         {
             try
             {
-                if (StatusDto == null)
+                if (statusDto == null)
                     return BadRequest("Dati non validi");
 
-                var request = await _requestService.GetRequestsByIdAsync(id);
+                var request = await _requestService.GetRequestsById(id);
                 if (request == null)
                     return NotFound("Richiesta non trovata");
 
-                request.Status = StatusDto.Status;
+                request.Status = statusDto.Status;
                 request.UpdatedAt = DateTime.UtcNow;
 
                 bool saved = await _requestService.Save();
-                return saved ? Ok(request) : BadRequest("Impossibile aggiornare lo stato");
+                if (!saved)
+                    return BadRequest("Impossibile aggiornare lo stato");
+
+                var resultDto = new GetRequestDto
+                {
+                    IdRequest = request.IdRequest,
+                    Description = request.Description,
+                    Status = request.Status.ToString(),
+                    CreatedAt = request.CreatedAt,
+                    UserName = request.User.UserName,
+                    UserEmail = request.User.Email
+                };
+
+                return Ok(resultDto);
             }
             catch (Exception ex)
             {
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError, $"Errore interno: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Errore interno: {ex.Message}");
             }
         }
 
 
-        //AGGIUNGERE AUTORIZZAZIONE RUOLI SOLO PER GLI ADMIN
+
         //DELETE REQUEST
         [HttpDelete("deleteRequest/{id:guid}")]
         public async Task<IActionResult> DeleteRequest(Guid id)
