@@ -7,6 +7,9 @@ using WineLabelMakerBE.Models.DTOs.Identity.Request;
 using WineLabelMakerBE.Models.DTOs.Identity.Response;
 using WineLabelMakerBE.Models.Entity;
 
+//AspNetUserController viene creato per la registrazione e il login dell'utente
+//Quando l'utente effettua il login, viene generato un token JWT che il client utilizza per autenticarsi
+//negli endpoint protetti dell'applicazione.
 namespace WineLabelMakerBE.Controllers
 {
     [Route("api/[controller]")]
@@ -16,16 +19,19 @@ namespace WineLabelMakerBE.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _configuration;
 
         public AspNetUserController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole> roleManager
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration configuration
             )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _configuration = configuration;
         }
 
         //REGISTER
@@ -108,19 +114,20 @@ namespace WineLabelMakerBE.Controllers
                 }
 
                 //Generazione token JWT
-                var key = System.Text.Encoding.UTF8.GetBytes("60a2add30a059f078613cc20c9fa26664b58bf7c286737a23c23f1d18b79518c0a82955c");
-                SigningCredentials cred = new SigningCredentials(new SymmetricSecurityKey(key),
+                var key = System.Text.Encoding.UTF8.GetBytes(_configuration["Jwt:SecurityKey"]);
+                SigningCredentials cred = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256);
 
                 var tokenExpiration = DateTime.Now.AddMinutes(30);
 
                 JwtSecurityToken jwt = new JwtSecurityToken(
-                    "https://", //Issuer
-                    "https://", //Audience
-                    claims: userClaims,
-                    expires: tokenExpiration,
-                    signingCredentials: cred
-                    );
+                     issuer: _configuration["Jwt:Issuer"],
+                     audience: _configuration["Jwt:Audience"],
+                     claims: userClaims,
+                     expires: tokenExpiration,
+                     signingCredentials: cred);
+
 
                 string token = new JwtSecurityTokenHandler().WriteToken(jwt);
 

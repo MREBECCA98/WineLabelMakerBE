@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using WineLabelMakerBE.Models.Entity;
 
+//ApplicationDbContext è la classe che gestisce il database dell'applicazione
+//Eredita da IdentityDbContext perchè include tutto il necessario per utenti e ruoli
 namespace WineLabelMakerBE.Models.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -16,11 +18,16 @@ namespace WineLabelMakerBE.Models.Data
         {
         }
 
+        //OnModelCreating serve a configurare il comportamento delle entity nel database,
+        //proteggendo i dati dall'eliminazione a cascata accidentale:
+        //- Una Request è collegata a un User tramite UserId, e se l'utente viene cancellato 
+        //  le richieste non vengono eliminate automaticamente (DeleteBehavior.Restrict)
+        //- Una Message è collegata a un User tramite UserId, e se l'utente viene cancellato 
+        //  i messaggi non vengono eliminati automaticamente (DeleteBehavior.Restrict)
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            // Qui diciamo a EF Core di NON fare cascade delete
             builder.Entity<Request>()
                 .HasOne(r => r.User)
                 .WithMany()

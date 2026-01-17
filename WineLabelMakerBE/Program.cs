@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 using WineLabelMakerBE.Models.Data;
 using WineLabelMakerBE.Models.Entity;
 using WineLabelMakerBE.Services;
@@ -55,10 +56,10 @@ builder.Services.AddAuthentication(
             ValidateAudience = true, // Validazione del destinatario del token
             ValidateLifetime = true, // Validazione della scadenza del token
             ValidateIssuerSigningKey = true, // Validazione della chiave di firma del token
-            ValidIssuer = "https://",
-            ValidAudience = "https://",
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-             System.Text.Encoding.UTF8.GetBytes("60a2add30a059f078613cc20c9fa26664b58bf7c286737a23c23f1d18b79518c0a82955c"))
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecurityKey"]))
         };
     });
 
@@ -83,12 +84,19 @@ builder.Services.AddSwaggerGen(option =>
 
 var app = builder.Build();
 
+//DbSeader
+await DbSeader.SeedAsync(app.Services);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//else
+//{
+//    app.UseHsts();
+//}
 
 app.UseHttpsRedirection();
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
+
 namespace WineLabelMakerBE.Models.Entity
 {
     public class ApplicationUser : IdentityUser
