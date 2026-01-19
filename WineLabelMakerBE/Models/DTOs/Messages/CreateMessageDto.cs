@@ -4,7 +4,7 @@
 //Vengono utilizzati per esporre solo i dati necessari per una determinata operazione,
 //nascondendo quelli sensibili o non necessari. 
 //In questo caso, il DTO "CreateMessageDto" viene utilizzato per inviare i dati necessari per creare
-//una nuova richiesta, esponendo solo il testo del messaggio e l'immagine dell'etichetta se presente.
+//una nuovi messaggi, esponendo solo il testo del messaggio e l'immagine dell'etichetta se presente.
 namespace WineLabelMakerBE.Models.DTOs.Messages
 {
     public class CreateMessageDto

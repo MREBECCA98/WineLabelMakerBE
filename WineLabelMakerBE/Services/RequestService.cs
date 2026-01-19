@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WineLabelMakerBE.Models.Data;
+using WineLabelMakerBE.Models.DTOs.Messages;
 using WineLabelMakerBE.Models.DTOs.Requests;
 using WineLabelMakerBE.Models.Entity;
 using WineLabelMakerBE.Services.Interface;
@@ -38,17 +39,77 @@ namespace WineLabelMakerBE.Services
                 .FirstOrDefaultAsync(r => r.IdRequest == id);
         }
 
-        //GET SEARCH AS NO TRACKING
-        public async Task<List<Request>> GetRequestSearchAsync(string SearchTerm)
+        //GET SEARCH
+        public async Task<List<RequestWithMessagesDto>> GetRequestSearchAsync(string SearchTerm)
         {
             if (string.IsNullOrWhiteSpace(SearchTerm))
-                return new List<Request>();
+                return new List<RequestWithMessagesDto>();
 
-            return await this._context.Requests
+            //Richieste filtrate in base allo username 
+            var requests = await _context.Requests
                 .Include(r => r.User)
-               .Where(s => EF.Functions.Like(s.User.UserName, $"%{SearchTerm}%"))
-               .AsNoTracking()
-               .ToListAsync();
+                .Include(r => r.Messages)
+                .ThenInclude(m => m.User)
+                .Where(r => EF.Functions.Like(r.User.UserName, $"%{SearchTerm}%"))
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+
+            return requests.Select(r => new RequestWithMessagesDto
+            {
+                IdRequest = r.IdRequest,
+                Description = r.Description,
+                Status = r.Status.ToString(),
+                CreatedAt = r.CreatedAt,
+                Messages = r.Messages
+                    .OrderBy(m => m.CreatedAt)
+                    .Select(m => new GetMessageDto
+                    {
+                        IdMessage = m.IdMessage,
+                        Text = m.Text,
+                        ImageUrl = m.ImageUrl,
+                        CreatedAt = m.CreatedAt,
+                        UserName = m.User.UserName,
+                        UserEmail = m.User.Email
+                    }).ToList()
+            }).ToList();
+        }
+
+        //GET ALL REQUEST WITH MESSAGE
+        public async Task<List<RequestWithMessagesDto>> GetAllRequestsWithMessagesAsync(string userId, bool isAdmin)
+        {
+            var query = _context.Requests
+                .Include(r => r.Messages)
+                .ThenInclude(m => m.User)
+                .AsQueryable();
+
+            if (!isAdmin)
+            {
+                query = query.Where(r => r.UserId == userId);
+            }
+
+            var requests = await query
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+            return requests.Select(r => new RequestWithMessagesDto
+            {
+                IdRequest = r.IdRequest,
+                Description = r.Description,
+                Status = r.Status.ToString(),
+                CreatedAt = r.CreatedAt,
+                Messages = r.Messages
+                    .OrderBy(m => m.CreatedAt)
+                    .Select(m => new GetMessageDto
+                    {
+                        IdMessage = m.IdMessage,
+                        Text = m.Text,
+                        ImageUrl = m.ImageUrl,
+                        CreatedAt = m.CreatedAt,
+                        UserName = m.User.UserName,
+                        UserEmail = m.User.Email
+                    }).ToList()
+            }).ToList();
         }
 
         //POST CREATE REQUEST 

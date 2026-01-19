@@ -9,7 +9,6 @@ using WineLabelMakerBE.Services.Interface;
 //per non esporre dati sensibili.
 //In questo caso, si tratta di un Controller per le richieste/descrizioni del prodotto
 //che il client invia per mettersi in contatto con l'azienda.
-
 namespace WineLabelMakerBE.Controllers
 {
     [Route("api/[controller]")]
@@ -93,36 +92,38 @@ namespace WineLabelMakerBE.Controllers
             }
         }
 
-        //GET SEARCH AS NO TRACKING
+        //GET SEARCH 
         //Questo endpoint è accessibile solo dall'admin.
-        //Permette di cercare le richieste filtrando per UserName.
+        //Permette di cercare le richieste filtrate per UserName
+        //e restituisce ogni richiesta trovata con i relativi messaggi
         [HttpGet("searchRequest/{searchTerm}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<GetRequestDto>>> GetSearchRequest(string searchTerm)
+        public async Task<ActionResult<IEnumerable<RequestWithMessagesDto>>> GetSearchRequest(string searchTerm)
         {
             try
             {
                 var requests = await _requestService.GetRequestSearchAsync(searchTerm);
 
-                var result = requests.Select(r => new GetRequestDto
-                {
-                    IdRequest = r.IdRequest,
-                    Description = r.Description,
-                    Status = r.Status.ToString(),
-                    CreatedAt = r.CreatedAt,
-                    UserName = r.User.UserName,
-                    UserEmail = r.User.Email
-                }).ToList();
-
-                return Ok(result);
+                return Ok(requests);
             }
             catch (Exception ex)
             {
-                return StatusCode(
-                   StatusCodes.Status500InternalServerError, $"Errore interno: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Errore interno: {ex.Message}");
             }
         }
 
+        //GET ALL REQUEST WITH MESSAGE
+        [HttpGet("allWithMessages")]
+        [Authorize]
+        public async Task<IActionResult> GetAllRequestsWithMessages()
+        {
+            string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            bool isAdmin = User.IsInRole("Admin");
+
+            var result = await _requestService.GetAllRequestsWithMessagesAsync(userId, isAdmin);
+
+            return Ok(result);
+        }
 
         //POST CREATE REQUEST
         //Questo endpoint è accessibile solo all'user
