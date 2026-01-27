@@ -134,7 +134,8 @@ namespace WineLabelMakerBE.Controllers
                 return Ok(new LoginResponseDto()
                 {
                     Token = token,
-                    Expiration = tokenExpiration
+                    Expiration = tokenExpiration,
+                    Role = roles.FirstOrDefault()
 
                 });
 
