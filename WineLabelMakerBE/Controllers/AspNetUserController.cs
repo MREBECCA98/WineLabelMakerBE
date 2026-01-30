@@ -38,6 +38,11 @@ namespace WineLabelMakerBE.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterRequestDto registerRequestDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 if (ModelState.IsValid)
@@ -119,7 +124,7 @@ namespace WineLabelMakerBE.Controllers
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256);
 
-                var tokenExpiration = DateTime.Now.AddMinutes(30);
+                var tokenExpiration = DateTime.Now.AddHours(3);
 
                 JwtSecurityToken jwt = new JwtSecurityToken(
                      issuer: _configuration["Jwt:Issuer"],
