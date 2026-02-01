@@ -58,10 +58,11 @@ namespace WineLabelMakerBE.Controllers
         }
 
         //GET REQUEST BY ID AS NO TRACKING
-        //Questo endpoint è accessibile solo dall'admin.
-        //Restituisce una singola richiesta in base all'ID fornito.
+        //Questo endpoint restituisce una singola richiesta filtrata in base al ruolo dell'utente:
+        //-L'admin può vedere qualsiasi richiesta
+        //-L'user può vedere solo le proprie richieste
         [HttpGet("requestById/{id:guid}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<ActionResult<GetRequestDto>> GetRequestById(Guid id)
         {
             try
@@ -73,6 +74,12 @@ namespace WineLabelMakerBE.Controllers
 
                 if (request == null)
                     return NotFound();
+
+                string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                bool isAdmin = User.IsInRole("Admin");
+
+                if (!isAdmin && request.UserId != userId)
+                    return Forbid();
 
                 var requestDto = new GetRequestDto
                 {
