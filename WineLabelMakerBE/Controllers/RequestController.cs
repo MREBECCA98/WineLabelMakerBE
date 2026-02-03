@@ -45,7 +45,8 @@ namespace WineLabelMakerBE.Controllers
                     Description = r.Description,
                     Status = r.Status.ToString(),
                     CreatedAt = r.CreatedAt,
-                    UserName = r.User.UserName,
+                    UserName = r.User.Name,
+                    UserSurname = r.User.Surname,
                     UserEmail = r.User.Email
                 }).ToList();
 
