@@ -103,26 +103,6 @@ namespace WineLabelMakerBE.Controllers
             }
         }
 
-        //GET SEARCH 
-        //Questo endpoint è accessibile solo dall'admin.
-        //Permette di cercare le richieste filtrate per UserName
-        //e restituisce ogni richiesta trovata con i relativi messaggi
-        [HttpGet("searchRequest/{searchTerm}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<RequestWithMessagesDto>>> GetSearchRequest(string searchTerm)
-        {
-            try
-            {
-                var requests = await _requestService.GetRequestSearchAsync(searchTerm);
-
-                return Ok(requests);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Errore interno: {ex.Message}");
-            }
-        }
-
         //GET ALL REQUEST WITH MESSAGE
         [HttpGet("allWithMessages")]
         [Authorize]

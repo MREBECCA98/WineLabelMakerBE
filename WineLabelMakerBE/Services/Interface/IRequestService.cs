@@ -14,9 +14,6 @@ namespace WineLabelMakerBE.Services.Interface
         //GET REQUEST BY ID AS NO TRACKING
         Task<Request> GetRequestsByIdAsync(Guid id);
 
-        //GET SEARCH 
-        Task<List<RequestWithMessagesDto>> GetRequestSearchAsync(string SearchTerm);
-
         //GET ALL REQUEST WITH MESSAGE
         Task<List<RequestWithMessagesDto>> GetAllRequestsWithMessagesAsync(string userId, bool isAdmin);
 

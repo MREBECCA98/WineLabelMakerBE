@@ -39,41 +39,6 @@ namespace WineLabelMakerBE.Services
                 .FirstOrDefaultAsync(r => r.IdRequest == id);
         }
 
-        //GET SEARCH
-        public async Task<List<RequestWithMessagesDto>> GetRequestSearchAsync(string SearchTerm)
-        {
-            if (string.IsNullOrWhiteSpace(SearchTerm))
-                return new List<RequestWithMessagesDto>();
-
-            //Richieste filtrate in base allo username 
-            var requests = await _context.Requests
-                .Include(r => r.User)
-                .Include(r => r.Messages)
-                .ThenInclude(m => m.User)
-                .Where(r => EF.Functions.Like(r.User.UserName, $"%{SearchTerm}%"))
-                .OrderByDescending(r => r.CreatedAt)
-                .ToListAsync();
-
-
-            return requests.Select(r => new RequestWithMessagesDto
-            {
-                IdRequest = r.IdRequest,
-                Description = r.Description,
-                Status = r.Status.ToString(),
-                CreatedAt = r.CreatedAt,
-                Messages = r.Messages
-                    .OrderBy(m => m.CreatedAt)
-                    .Select(m => new GetMessageDto
-                    {
-                        IdMessage = m.IdMessage,
-                        Text = m.Text,
-                        ImageUrl = m.ImageUrl,
-                        CreatedAt = m.CreatedAt,
-                        UserName = m.User.UserName,
-                        UserEmail = m.User.Email
-                    }).ToList()
-            }).ToList();
-        }
 
         //GET ALL REQUEST WITH MESSAGE
         public async Task<List<RequestWithMessagesDto>> GetAllRequestsWithMessagesAsync(string userId, bool isAdmin)
