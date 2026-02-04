@@ -43,8 +43,10 @@ namespace WineLabelMakerBE.Controllers
                     Text = m.Text,
                     ImageUrl = m.ImageUrl,
                     CreatedAt = m.CreatedAt,
-                    UserName = m.User.UserName,
-                    UserEmail = m.User.Email
+                    UserName = m.User.Name,
+                    UserSurname = m.User.Surname,
+                    UserEmail = m.User.Email,
+                    CompanyName = m.User.CompanyName
                 }));
             }
             catch (Exception ex)
@@ -75,8 +77,10 @@ namespace WineLabelMakerBE.Controllers
                     Text = message.Text,
                     ImageUrl = message.ImageUrl,
                     CreatedAt = message.CreatedAt,
-                    UserName = message.User.UserName,
-                    UserEmail = message.User.Email
+                    UserName = message.User.Name,
+                    UserSurname = message.User.Surname,
+                    UserEmail = message.User.Email,
+                    CompanyName = message.User.CompanyName
                 };
 
                 return Ok(messageDto);

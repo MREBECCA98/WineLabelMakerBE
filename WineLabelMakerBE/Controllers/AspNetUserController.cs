@@ -51,11 +51,12 @@ namespace WineLabelMakerBE.Controllers
                     {
                         UserName = registerRequestDto.Email,
                         Email = registerRequestDto.Email,
+                        CompanyName = registerRequestDto.CompanyName,
                         Name = registerRequestDto.Name,
                         Surname = registerRequestDto.Surname,
                         PhoneNumber = registerRequestDto.PhoneNumber,
                         CreatedAt = DateTime.Now,
-                        Birthday = registerRequestDto.Birthday,
+
                         Id = Guid.NewGuid().ToString(),
                         IsDeleted = false,
                         EmailConfirmed = true,
@@ -111,7 +112,10 @@ namespace WineLabelMakerBE.Controllers
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email)
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim("Name", user.Name ?? ""),
+                    new Claim("Surname", user.Surname ?? ""),
+                    new Claim("CompanyName", user.CompanyName ?? "")
                 };
                 foreach (string roleName in roles)
                 {

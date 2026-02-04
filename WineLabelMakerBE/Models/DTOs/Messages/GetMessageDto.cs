@@ -13,7 +13,12 @@ namespace WineLabelMakerBE.Models.DTOs.Messages
         public Guid IdMessage { get; set; }
 
         [Required]
+        public string CompanyName { get; set; }
+
+        [Required]
         public string UserName { get; set; }
+        [Required]
+        public string UserSurname { get; set; }
 
         [Required]
         public string UserEmail { get; set; }

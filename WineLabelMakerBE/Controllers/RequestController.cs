@@ -47,7 +47,8 @@ namespace WineLabelMakerBE.Controllers
                     CreatedAt = r.CreatedAt,
                     UserName = r.User.Name,
                     UserSurname = r.User.Surname,
-                    UserEmail = r.User.Email
+                    UserEmail = r.User.Email,
+                    CompanyName = r.User.CompanyName,
                 }).ToList();
 
                 return Ok(requestDto);
@@ -88,8 +89,10 @@ namespace WineLabelMakerBE.Controllers
                     Description = request.Description,
                     Status = request.Status.ToString(),
                     CreatedAt = request.CreatedAt,
-                    UserName = request.User.UserName,
-                    UserEmail = request.User.Email
+                    UserName = request.User.Name,
+                    UserSurname = request.User.Surname,
+                    UserEmail = request.User.Email,
+                    CompanyName = request.User.CompanyName,
                 };
 
                 return Ok(requestDto);
@@ -157,8 +160,10 @@ namespace WineLabelMakerBE.Controllers
                     Description = createdRequest.Description,
                     Status = createdRequest.Status.ToString(),
                     CreatedAt = createdRequest.CreatedAt,
-                    UserName = createdRequest.User.UserName,
-                    UserEmail = createdRequest.User.Email
+                    UserName = createdRequest.User.Name,
+                    UserSurname = createdRequest.User.Surname,
+                    UserEmail = createdRequest.User.Email,
+                    CompanyName = createdRequest.User.CompanyName,
                 };
 
                 return Ok(resultDto);
@@ -200,8 +205,10 @@ namespace WineLabelMakerBE.Controllers
                     Description = request.Description,
                     Status = request.Status.ToString(),
                     CreatedAt = request.CreatedAt,
-                    UserName = request.User.UserName,
-                    UserEmail = request.User.Email
+                    UserName = request.User.Name,
+                    UserSurname = request.User.Surname,
+                    UserEmail = request.User.Email,
+                    CompanyName = request.User.CompanyName,
                 };
 
                 return Ok(resultDto);
@@ -242,8 +249,10 @@ namespace WineLabelMakerBE.Controllers
                     Description = request.Description,
                     Status = request.Status.ToString(),
                     CreatedAt = request.CreatedAt,
-                    UserName = request.User.UserName,
-                    UserEmail = request.User.Email
+                    UserName = request.User.Name,
+                    UserSurname = request.User.Surname,
+                    UserEmail = request.User.Email,
+                    CompanyName = request.User.CompanyName,
                 };
 
                 return Ok(resultDto);

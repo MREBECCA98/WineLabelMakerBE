@@ -14,6 +14,10 @@ namespace WineLabelMakerBE.Models.DTOs.Requests
         public Guid IdRequest { get; set; }
 
         [Required]
+        [MaxLength(100)]
+        public string CompanyName { get; set; }
+
+        [Required]
         public string UserName { get; set; }
 
         [Required]

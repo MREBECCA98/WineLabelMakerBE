@@ -33,7 +33,6 @@ namespace WineLabelMakerBE.Models.Data
                     Email = email,
                     EmailConfirmed = true,
                     CreatedAt = DateTime.UtcNow,
-                    Birthday = new DateTime(1998, 12, 9),
                     IsDeleted = false
                 };
 
