@@ -29,6 +29,7 @@ namespace WineLabelMakerBE.Models.Data
                 {
                     Name = "Rebecca",
                     Surname = "Matarozzo",
+                    CompanyName = "Wine Label Maker",
                     UserName = email,
                     Email = email,
                     EmailConfirmed = true,
