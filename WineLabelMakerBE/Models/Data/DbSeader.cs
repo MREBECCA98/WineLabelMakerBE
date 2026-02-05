@@ -19,7 +19,7 @@ namespace WineLabelMakerBE.Models.Data
             if (!await roleManager.RoleExistsAsync("Admin"))
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
 
-            var email = "WineLabelMaker@gmail.com";
+            var email = "reb.matarozzo@gmail.com";
 
             var user = await userManager.FindByEmailAsync(email);
 

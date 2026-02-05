@@ -1,13 +1,17 @@
+//EMAIL
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
 using WineLabelMakerBE.Models.Data;
 using WineLabelMakerBE.Models.Entity;
 using WineLabelMakerBE.Services;
 using WineLabelMakerBE.Services.Interface;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +26,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 //SERVICE
 builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 //IDENTITY 
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
@@ -93,6 +98,25 @@ builder.Services.AddSwaggerGen(option =>
         { new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } },
             Array.Empty<string>() } });
 });
+
+//-----------------------------------------------------------------
+//EMAIL-Configurazione SMTP per GMAIL
+var smtpClient = new SmtpClient("smtp.gmail.com")
+{
+    Port = 587,
+    Credentials = new NetworkCredential(
+        "reb.matarozzo@gmail.com",
+        "nfgs sfmw jhbc ymxi"
+    ),
+    EnableSsl = true
+};
+
+//REGISTRAZIONE FLUENT EMAIL
+builder.Services
+    .AddFluentEmail("reb.matarozzo@gmail.com")
+    .AddRazorRenderer()
+    .AddSmtpSender(smtpClient);
+//-----------------------------------------------------------------
 
 
 var app = builder.Build();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WineLabelMakerBE.Models.DTOs.Requests;
+using WineLabelMakerBE.Models.Entity;
 using WineLabelMakerBE.Services.Interface;
 
 //Il Controller fa da filtro tra le richieste del client e le risposte del server.
@@ -17,9 +18,11 @@ namespace WineLabelMakerBE.Controllers
     {
         //Iniezione dell'interfaccia per la gestione delle richieste 
         private readonly IRequestService _requestService;
+        private readonly IEmailService _emailService;
 
-        public RequestController(IRequestService requestService)
+        public RequestController(IRequestService requestService, IEmailService emailService)
         {
+            _emailService = emailService;
             _requestService = requestService;
         }
 
@@ -203,6 +206,7 @@ namespace WineLabelMakerBE.Controllers
         //UPDATE ADMIN STATUS
         //Questo endpoint è accessibile solo all'admin
         //Permette all'admin di modificare lo stato della richiesta (in attesa, in corso, completata, rifiutata)
+        //E invia un'email di default in base allo stato cambiato
         [HttpPut("updateAdmin/{id:guid}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateRequestStatus(Guid id, UpdateRequestStatusDto statusDto)
@@ -222,6 +226,48 @@ namespace WineLabelMakerBE.Controllers
                 bool saved = await _requestService.Save();
                 if (!saved)
                     return BadRequest("Impossibile aggiornare lo stato");
+
+
+                //EMAIL DI DEFAULT IN BASE AL CAMBIO DI STATO 
+                //--------------------------------------------------------------------------------------
+                string statusIT = request.Status switch
+                {
+                    RequestStatus.Pending => "In attesa",
+                    RequestStatus.InProgress => "In lavorazione",
+                    RequestStatus.Completed => "Completata",
+                    RequestStatus.Rejected => "Respinta",
+
+
+                };
+                string subject = $"WINE LABEL MAKER - aggiornamento richiesta: {statusIT}";
+                string body = request.Status switch
+                {
+
+
+                    RequestStatus.InProgress => $"Gentile {request.User.Name} {request.User.Surname},\n\n" +
+                                                "Abbiamo preso in carico la sua richiesta per la nuova etichetta di vino. " +
+                                                "La nostra illustratrice sta attualmente lavorando sulla creazione dell’etichetta, " +
+                                                "seguendo le indicazioni che ci ha fornito.\n\n" +
+                                                "Non appena l’etichetta sarà completata, riceverà una nuova email con il file pronto.\n\n" +
+                                                "Grazie per aver scelto Wine Label Maker.",
+                    RequestStatus.Rejected => $"Gentile {request.User.Name} {request.User.Surname},\n\n" +
+                                              "Siamo spiacenti di informarla che la sua richiesta per la nuova etichetta di vino non può essere completata. " +
+                                              "Se desidera ulteriori dettagli o assistenza, non esiti a contattarci.\n\n" +
+                                              "Ci auguriamo di poterla aiutare con altre richieste in futuro.\n\n" +
+                                              "Grazie per aver scelto Wine Label Maker.",
+
+                    _ => ""
+
+
+                };
+
+                //Se il body e null non inviare la mail
+                if (!string.IsNullOrEmpty(body))
+                {
+                    await _emailService.SendSimpleEmailAsync(request.User.Email, subject, body);
+                }
+
+                //--------------------------------------------------------------------------------------
 
                 var resultDto = new GetRequestDto
                 {

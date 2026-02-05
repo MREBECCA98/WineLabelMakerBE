@@ -73,7 +73,8 @@ namespace WineLabelMakerBE.Services
                         CreatedAt = m.CreatedAt,
                         UserName = m.User.UserName,
                         UserEmail = m.User.Email
-                    }).ToList()
+                    }).ToList(),
+
             }).ToList();
         }
 
