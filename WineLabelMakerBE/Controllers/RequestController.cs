@@ -107,17 +107,17 @@ namespace WineLabelMakerBE.Controllers
         }
 
         //GET ALL REQUEST WITH MESSAGE
-        [HttpGet("allWithMessages")]
-        [Authorize]
-        public async Task<IActionResult> GetAllRequestsWithMessages()
-        {
-            string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            bool isAdmin = User.IsInRole("Admin");
+        //[HttpGet("allWithMessages")]
+        //[Authorize]
+        //public async Task<IActionResult> GetAllRequestsWithMessages()
+        //{
+        //    string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        //    bool isAdmin = User.IsInRole("Admin");
 
-            var result = await _requestService.GetAllRequestsWithMessagesAsync(userId, isAdmin);
+        //    var result = await _requestService.GetAllRequestsWithMessagesAsync(userId, isAdmin);
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
 
         //POST CREATE REQUEST
         //Questo endpoint è accessibile solo all'user

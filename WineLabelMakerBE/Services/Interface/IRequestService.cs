@@ -15,7 +15,7 @@ namespace WineLabelMakerBE.Services.Interface
         Task<Request> GetRequestsByIdAsync(Guid id);
 
         //GET ALL REQUEST WITH MESSAGE
-        Task<List<RequestWithMessagesDto>> GetAllRequestsWithMessagesAsync(string userId, bool isAdmin);
+        //Task<List<RequestWithMessagesDto>> GetAllRequestsWithMessagesAsync(string userId, bool isAdmin);
 
         //POST CREATE REQUEST 
         Task<Request> CreateRequestAsync(CreateRequestDto dto, string userId);

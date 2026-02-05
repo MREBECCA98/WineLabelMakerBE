@@ -32,6 +32,6 @@ namespace WineLabelMakerBE.Models.Entity
         public ApplicationUser User { get; set; }
 
         //Collezione di messaggi associati alla richiesta
-        public ICollection<Message> Messages { get; set; } = new List<Message>();
+        //public ICollection<Message> Messages { get; set; } = new List<Message>();
     }
 }

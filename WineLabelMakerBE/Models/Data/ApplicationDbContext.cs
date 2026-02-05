@@ -10,7 +10,7 @@ namespace WineLabelMakerBE.Models.Data
     {
         //DbSet viene utilizzato per inserire le entità nel database
         public DbSet<Request> Requests { get; set; }
-        public DbSet<Message> Messages { get; set; }
+        //public DbSet<Message> Messages { get; set; }
         public DbSet<ApplicationUser> AspNetUsers { get; set; }
 
         //Costruttore che accetta le opzioni del contesto e le passa alla classe base DbContext
@@ -34,11 +34,11 @@ namespace WineLabelMakerBE.Models.Data
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Message>()
-                .HasOne(m => m.User)
-                .WithMany()
-                .HasForeignKey(m => m.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //builder.Entity<Message>()
+            //    .HasOne(m => m.User)
+            //    .WithMany()
+            //    .HasForeignKey(m => m.UserId)
+            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

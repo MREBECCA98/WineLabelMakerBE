@@ -25,7 +25,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 
 //SERVICE
 builder.Services.AddScoped<IRequestService, RequestService>();
-builder.Services.AddScoped<IMessageService, MessageService>();
+//builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 //IDENTITY 
