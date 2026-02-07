@@ -247,17 +247,17 @@ namespace WineLabelMakerBE.Controllers
 
 
                     RequestStatus.InProgress => $"Gentile {request.User.Name} {request.User.Surname},\n\n" +
-                                                "La sua richiesta per la nuova etichetta di vino è stata presa in carico. " +
+                                                $"La sua richiesta con id: {request.IdRequest} per la nuova etichetta di vino è stata presa in carico. " +
                                                 "La nostra illustratrice ha iniziato a lavorare sulla creazione dell’etichetta, seguendo le indicazioni da lei fornite.\n\n" +
                                                 "A breve riceverà una seconda email con il preventivo per la realizzazione dell’etichetta.\n\n" +
                                                 "Grazie per aver scelto Wine Label Maker.",
                     RequestStatus.PaymentConfirmed => $"Gentile {request.User.Name} {request.User.Surname},\n\n" +
-                                                      "Abbiamo ricevuto il pagamento relativo alla sua richiesta per la nuova etichetta di vino. " +
+                                                      $"Abbiamo ricevuto il pagamento relativo alla sua richiesta con id: {request.IdRequest} per la nuova etichetta di vino. " +
                                                       "Il nostro team ha iniziato la lavorazione e procederà con la creazione dell’etichetta secondo le sue indicazioni.\n\n" +
                                                       "A breve riceverà l’email con l’etichetta completata in allegato.\n\n" +
                                                       "Grazie per aver scelto Wine Label Maker.",
                     RequestStatus.Rejected => $"Gentile {request.User.Name} {request.User.Surname},\n\n" +
-                                              "Siamo spiacenti di informarla che la sua richiesta per la nuova etichetta di vino non può essere completata. " +
+                                              $"Siamo spiacenti di informarla che la sua richiesta con id: {request.IdRequest} per la nuova etichetta di vino non può essere completata. " +
                                               "Se desidera ulteriori dettagli o assistenza, non esiti a contattarci.\n\n" +
                                               "Ci auguriamo di poterla aiutare con altre richieste in futuro.\n\n" +
                                               "Grazie per aver scelto Wine Label Maker.",
