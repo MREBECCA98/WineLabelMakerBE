@@ -101,21 +101,26 @@ builder.Services.AddSwaggerGen(option =>
 
 //-----------------------------------------------------------------
 //EMAIL-Configurazione SMTP per GMAIL
-var smtpClient = new SmtpClient("smtp.gmail.com")
-{
-    Port = 587,
-    Credentials = new NetworkCredential(
-        "reb.matarozzo@gmail.com",
-        "nfgs sfmw jhbc ymxi"
-    ),
-    EnableSsl = true
-};
+//Dati sentibili in appsetting.Development.json -gitignore 
+var emailConfig = builder.Configuration.GetSection("FluentEmail");
 
-//REGISTRAZIONE FLUENT EMAIL
 builder.Services
-    .AddFluentEmail("reb.matarozzo@gmail.com")
+    .AddFluentEmail(
+        emailConfig["FromEmail"],
+        emailConfig["FromName"]
+    )
     .AddRazorRenderer()
-    .AddSmtpSender(smtpClient);
+    .AddSmtpSender(new SmtpClient
+    {
+        Host = emailConfig["Smtp:Host"],
+        Port = int.Parse(emailConfig["Smtp:Port"]),
+        EnableSsl = bool.Parse(emailConfig["Smtp:EnableSsl"]),
+        Credentials = new NetworkCredential(
+            emailConfig["Smtp:Username"],
+            emailConfig["Smtp:Password"]
+        )
+    });
+
 //-----------------------------------------------------------------
 
 

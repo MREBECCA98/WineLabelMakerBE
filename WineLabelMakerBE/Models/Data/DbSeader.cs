@@ -4,6 +4,7 @@ using WineLabelMakerBE.Models.Entity;
 //Utilizzo della classe DbSeader per la creazione dell'admin
 //DbSeeder serve a creare automaticamente dati iniziali nel database quando l'app parte
 //Funziona grazie ai servizi di Identity e viene eseguito all'avvio dell'app tramite Program.cs.
+//Dati sentibili in appsetting.Development.json- gitignore 
 namespace WineLabelMakerBE.Models.Data
 {
     public static class DbSeader
@@ -15,21 +16,21 @@ namespace WineLabelMakerBE.Models.Data
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+            var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-            if (!await roleManager.RoleExistsAsync("Admin"))
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
+            var adminSection = configuration.GetSection("Seeder:Admin");
 
-            var email = "reb.matarozzo@gmail.com";
-
+            var email = adminSection["Email"];
+            var password = adminSection["Password"];
             var user = await userManager.FindByEmailAsync(email);
 
             if (user == null)
             {
                 user = new ApplicationUser
                 {
-                    Name = "Rebecca",
-                    Surname = "Matarozzo",
-                    CompanyName = "Wine Label Maker",
+                    Name = adminSection["Name"],
+                    Surname = adminSection["Surname"],
+                    CompanyName = adminSection["CompanyName"],
                     UserName = email,
                     Email = email,
                     EmailConfirmed = true,
@@ -37,7 +38,7 @@ namespace WineLabelMakerBE.Models.Data
                     IsDeleted = false
                 };
 
-                await userManager.CreateAsync(user, "Admin123!");
+                await userManager.CreateAsync(user, password);
                 await userManager.AddToRoleAsync(user, "Admin");
             }
         }
