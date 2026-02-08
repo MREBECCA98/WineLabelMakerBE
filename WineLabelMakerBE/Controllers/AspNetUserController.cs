@@ -128,7 +128,7 @@ namespace WineLabelMakerBE.Controllers
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256);
 
-                var tokenExpiration = DateTime.Now.AddHours(3);
+                var tokenExpiration = DateTime.Now.AddHours(4);
 
                 JwtSecurityToken jwt = new JwtSecurityToken(
                      issuer: _configuration["Jwt:Issuer"],
