@@ -205,7 +205,8 @@ namespace WineLabelMakerBE.Controllers
 
         //UPDATE ADMIN STATUS
         //Questo endpoint è accessibile solo all'admin
-        //Permette all'admin di modificare lo stato della richiesta (in attesa, in corso, completata, rifiutata)
+        //Permette all'admin di modificare lo stato della richiesta
+        //(in attesa, in lavorazione, preventivo inviato, pagamento completato, completata, rifiutata)
         //E invia un'email di default in base allo stato cambiato
         [HttpPut("updateAdmin/{id:guid}")]
         [Authorize(Roles = "Admin")]

@@ -14,7 +14,6 @@ namespace WineLabelMakerBE.Services
             _fluentEmail = fluentEmail;
         }
 
-        //Email semplice per lo stato "InProgress", "Rejected"
         //Viene utilizzato all'interno del RequestController al cambio di stato per poter inviare
         //L'email di default con il relativo body
         public async Task<bool> SendSimpleEmailAsync(string toEmail, string subject, string body)

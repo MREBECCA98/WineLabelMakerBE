@@ -4,7 +4,6 @@ namespace WineLabelMakerBE.Models.DTOs.Identity.Request
 {
     public class RegisterRequestDto
     {
-
         [Required]
         [MaxLength(100)]
         public string CompanyName { get; set; }
@@ -19,6 +18,5 @@ namespace WineLabelMakerBE.Models.DTOs.Identity.Request
         public string? Surname { get; set; }
         [Phone]
         public string PhoneNumber { get; set; }
-
     }
 }

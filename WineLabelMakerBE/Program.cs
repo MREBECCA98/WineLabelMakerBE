@@ -1,4 +1,3 @@
-//EMAIL
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +14,7 @@ using WineLabelMakerBE.Services.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-//Configurazione del DbContext con SQL Server 
+//CONFIGURAZIONE DEL DBCONTEXT CON SQL SERVER
 builder.Services.AddDbContext<ApplicationDbContext>(
     option => option.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -46,7 +43,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
     }).AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-// CORS
+//CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost5173", builder =>
@@ -59,7 +56,7 @@ builder.Services.AddCors(options =>
 });
 
 
-//Configurazione autenticazione
+//CONFIGURAZIONE AUTENTICAZIONE
 builder.Services.AddAuthentication(
     options =>
     {
@@ -88,7 +85,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 //AUTENTICAZIONE SWAGGER TOKEN AMMINISTRATORE
-
 builder.Services.AddSwaggerGen(option =>
 {
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -126,10 +122,10 @@ builder.Services
 
 var app = builder.Build();
 
-//DbSeader
+//DB SEADER
 await DbSeader.SeedAsync(app.Services);
 
-// Configure the HTTP request pipeline.
+//Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

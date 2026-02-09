@@ -39,7 +39,6 @@ namespace WineLabelMakerBE.Services
                 .FirstOrDefaultAsync(r => r.IdRequest == id);
         }
 
-
         //GET ALL REQUEST WITH MESSAGE
         //public async Task<List<RequestWithMessagesDto>> GetAllRequestsWithMessagesAsync(string userId, bool isAdmin)
         //{
@@ -127,11 +126,8 @@ namespace WineLabelMakerBE.Services
                 return await this._context.SaveChangesAsync() > 0;
             }
 
-
             return false;
 
         }
     }
-
-
 }

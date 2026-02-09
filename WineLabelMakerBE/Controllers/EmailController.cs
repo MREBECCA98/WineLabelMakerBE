@@ -36,67 +36,82 @@ namespace WineLabelMakerBE.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            //ID della RICHIESTA
-            var request = await _requestService.GetRequestsByIdAsync(dto.RequestId);
-            if (request == null)
-                return NotFound("Richiesta non trovata.");
-
-            if (request.Status != RequestStatus.Completed)
-                return BadRequest("L'email con allegato può essere inviata solo per richieste completate.");
-
-            //Email da inviare a chi ha fatto la richiesta 
-            string toEmail = request.User.Email;
-
-            //Traduzione dell'enum
-            string statusIT = request.Status switch
+            try
             {
-                RequestStatus.Completed => "Completata",
+                //ID della RICHIESTA
+                var request = await _requestService.GetRequestsByIdAsync(dto.RequestId);
+                if (request == null)
+                    return NotFound("Richiesta non trovata.");
 
-            };
+                if (request.Status != RequestStatus.Completed)
+                    return BadRequest("L'email con allegato può essere inviata solo per richieste completate.");
 
-            //Subject e body default per l'email status "Completed"
-            string subject = $"WINE LABEL MAKER - aggiornamento richiesta: {statusIT}";
-            string body = !string.IsNullOrWhiteSpace(dto.CustomBody) ?
-                          dto.CustomBody : $"Gentile {request.User.Name} {request.User.Surname},\n\n" +
-                                           $"Siamo felici di informarla che la sua richiesta con id: {request.IdRequest} per la nuova etichetta di vino è stata completata con successo. " +
-                                           "La nostra illustratrice ha realizzato l’etichetta seguendo la descrizione da lei fornita.\n\n" +
-                                           "Troverà l’etichetta in allegato a questa email.\n\n" +
-                                           "Per qualsiasi chiarimento, modifica o ulteriore richiesta, non esiti a contattarci: " +
-                                           "saremo lieti di assisterla e di mettere la nostra esperienza a sua disposizione.\n\n" +
-                                           "Cordiali saluti,\n" +
-                                           "Il team di Wine Label Maker";
+                //Email da inviare a chi ha fatto la richiesta 
+                string toEmail = request.User.Email;
+
+                //Traduzione dell'enum
+                string statusIT = request.Status switch
+                {
+                    RequestStatus.Completed => "Completata",
+
+                };
+
+                //Subject e body default per l'email status "Completed"
+                string subject = $"WINE LABEL MAKER - aggiornamento richiesta: {statusIT}";
+                string body = !string.IsNullOrWhiteSpace(dto.CustomBody) ?
+                              dto.CustomBody : $"Gentile {request.User.Name} {request.User.Surname},\n\n" +
+                                               $"Siamo felici di informarla che la sua richiesta con id: {request.IdRequest} per la nuova etichetta di vino è stata completata con successo. " +
+                                               "La nostra illustratrice ha realizzato l’etichetta seguendo la descrizione da lei fornita.\n\n" +
+                                               "Troverà l’etichetta in allegato a questa email.\n\n" +
+                                               "Per qualsiasi chiarimento, modifica o ulteriore richiesta, non esiti a contattarci: " +
+                                               "saremo lieti di assisterla e di mettere la nostra esperienza a sua disposizione.\n\n" +
+                                               "Cordiali saluti,\n" +
+                                               "Il team di Wine Label Maker";
 
 
-            //Immagine etichetta
-            if (string.IsNullOrEmpty(dto.ImageName))
-                return BadRequest("Devi fornire il nome dell'immagine da allegare.");
+                //Immagine etichetta
+                if (string.IsNullOrEmpty(dto.ImageName))
+                    return BadRequest("Devi fornire il nome dell'immagine da allegare.");
 
-            string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "labels", dto.ImageName);
-            if (!System.IO.File.Exists(imagePath))
-                return NotFound($"Immagine {dto.ImageName} non trovata.");
+                string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "labels", dto.ImageName);
+                if (!System.IO.File.Exists(imagePath))
+                    return NotFound($"Immagine {dto.ImageName} non trovata.");
 
-            //Mail con allegato
-            bool invioOk = await _emailService.EmailWithLabelAsync(toEmail, subject, body, imagePath);
+                //Mail con allegato
+                bool invioOk = await _emailService.EmailWithLabelAsync(toEmail, subject, body, imagePath);
 
-            return invioOk ? Ok("Mail inviata con successo!") : StatusCode(500, "Errore nell'invio della mail");
+                return invioOk ? Ok("Mail inviata con successo!") : StatusCode(500, "Errore nell'invio della mail");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Errore interno: {ex.Message}");
+            }
         }
 
         //Aggiunta immagina FE
         [HttpPost("uploadLabel")]
         public async Task<IActionResult> UploadLabel(IFormFile labelImage)
         {
-            if (labelImage == null || labelImage.Length == 0)
-                return BadRequest("Nessun file selezionato.");
-
-            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "labels", labelImage.FileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            try
             {
-                await labelImage.CopyToAsync(stream);
+                if (labelImage == null || labelImage.Length == 0)
+                    return BadRequest("Nessun file selezionato.");
+
+                string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "labels", labelImage.FileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await labelImage.CopyToAsync(stream);
+                }
+
+                return Ok("Immagine caricata con successo!");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Errore interno: {ex.Message}");
+
             }
 
-            return Ok("Immagine caricata con successo!");
         }
 
 
@@ -107,39 +122,42 @@ namespace WineLabelMakerBE.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            //Id della richiesta
-            var request = await _requestService.GetRequestsByIdAsync(dto.RequestId);
-            if (request == null)
-                return NotFound("Richiesta non trovata.");
-
-            if (request.Status != RequestStatus.QuoteSent)
-                return BadRequest("L'email del preventivo può essere inviata solo per richieste con status 'QuoteSent'.");
-
-            //Email da inviare a chi ha fatto la richiesta 
-            string toEmail = request.User.Email;
-
-            //Traduzione dell'enum
-            string statusIT = request.Status switch
+            try
             {
-                RequestStatus.QuoteSent => "Preventivo inviato",
+                //Id della richiesta
+                var request = await _requestService.GetRequestsByIdAsync(dto.RequestId);
+                if (request == null)
+                    return NotFound("Richiesta non trovata.");
 
-            };
+                if (request.Status != RequestStatus.QuoteSent)
+                    return BadRequest("L'email del preventivo può essere inviata solo per richieste con status 'QuoteSent'.");
 
-            string subject = $"WINE LABEL MAKER - aggiornamento richiesta: {statusIT}";
+                //Email da inviare a chi ha fatto la richiesta 
+                string toEmail = request.User.Email;
+
+                //Traduzione dell'enum
+                string statusIT = request.Status switch
+                {
+                    RequestStatus.QuoteSent => "Preventivo inviato",
+
+                };
+
+                string subject = $"WINE LABEL MAKER - aggiornamento richiesta: {statusIT}";
 
 
-            string body = dto.CustomBody;
+                string body = dto.CustomBody;
 
-            bool invioOk = await _emailService.SendSimpleEmailAsync(toEmail, subject, body);
+                bool invioOk = await _emailService.SendSimpleEmailAsync(toEmail, subject, body);
 
-            return invioOk ? Ok("Email del preventivo inviata con successo!")
-                            : StatusCode(500, "Errore nell'invio della mail");
+                return invioOk ? Ok("Email del preventivo inviata con successo!")
+                                : StatusCode(500, "Errore nell'invio della mail");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Errore interno: {ex.Message}");
+            }
         }
-
     }
-
-
 }
 
 
