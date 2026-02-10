@@ -60,12 +60,11 @@ namespace WineLabelMakerBE.Controllers
                 string subject = $"WINE LABEL MAKER - aggiornamento richiesta: {statusIT}";
                 string body = !string.IsNullOrWhiteSpace(dto.CustomBody) ?
                               dto.CustomBody : $"Gentile {request.User.Name} {request.User.Surname},\n\n" +
-                                               $"Siamo felici di informarla che la sua richiesta con id: {request.IdRequest} per la nuova etichetta di vino è stata completata con successo. " +
-                                               "La nostra illustratrice ha realizzato l’etichetta seguendo la descrizione da lei fornita.\n\n" +
-                                               "Troverà l’etichetta in allegato a questa email.\n\n" +
-                                               "Per qualsiasi chiarimento, modifica o ulteriore richiesta, non esiti a contattarci: " +
+                                               $"siamo felici di informarla che la sua richiesta con id: {request.IdRequest} è stata completata con successo.\n" +
+                                               "La nostra illustratrice, ha realizzato l’etichetta, che trova in allegato, seguendo la descrizione da lei fornita.\n\n" +
+                                               "Per qualsiasi chiarimento, modifica o ulteriore richiesta, non esiti a contattarci;" +
                                                "saremo lieti di assisterla e di mettere la nostra esperienza a sua disposizione.\n\n" +
-                                               "Cordiali saluti,\n" +
+                                               "Cordiali saluti.\n" +
                                                "Il team di Wine Label Maker";
 
 
