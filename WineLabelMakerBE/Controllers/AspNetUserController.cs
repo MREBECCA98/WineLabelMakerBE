@@ -55,7 +55,7 @@ namespace WineLabelMakerBE.Controllers
                         Name = registerRequestDto.Name,
                         Surname = registerRequestDto.Surname,
                         PhoneNumber = registerRequestDto.PhoneNumber,
-                        CreatedAt = DateTime.Now,
+                        CreatedAt = DateTime.UtcNow,
 
                         Id = Guid.NewGuid().ToString(),
                         IsDeleted = false,
@@ -128,7 +128,7 @@ namespace WineLabelMakerBE.Controllers
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256);
 
-                var tokenExpiration = DateTime.Now.AddHours(4);
+                var tokenExpiration = DateTime.UtcNow.AddHours(4);
 
                 JwtSecurityToken jwt = new JwtSecurityToken(
                      issuer: _configuration["Jwt:Issuer"],
