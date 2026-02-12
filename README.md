@@ -108,3 +108,5 @@ Copy this code and insert it into appsettings.Development.json:
 The backend will start on **https://localhost:7046/swagger/index.html** by default  
 You can open this URL in your browser to access Swagger UI and test all the APIs securely via HTTPS  
 
+**Important:** To run the backend properly, you also need to clone and run the frontend:  
+[Wine Label Maker Front End](https://github.com/MREBECCA98/WineLabelMakerFE)  
