@@ -14,7 +14,7 @@ using WineLabelMakerBE.Services.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//CONFIGURAZIONE DEL DBCONTEXT CON SQL SERVER
+//DBCONTEXT CONFIGURATION WITH SQL SERVER
 builder.Services.AddDbContext<ApplicationDbContext>(
     option => option.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -56,7 +56,7 @@ builder.Services.AddCors(options =>
 });
 
 
-//CONFIGURAZIONE AUTENTICAZIONE
+//AUTHENTICATION CONFIGURATION
 builder.Services.AddAuthentication(
     options =>
     {
@@ -67,10 +67,10 @@ builder.Services.AddAuthentication(
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true, // Validazione dell'emittente del token
-            ValidateAudience = true, // Validazione del destinatario del token
-            ValidateLifetime = true, // Validazione della scadenza del token
-            ValidateIssuerSigningKey = true, // Validazione della chiave di firma del token
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
@@ -84,7 +84,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-//AUTENTICAZIONE SWAGGER TOKEN AMMINISTRATORE
+//SWAGGER ADMINISTRATOR TOKEN AUTHENTICATION
 builder.Services.AddSwaggerGen(option =>
 {
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -96,8 +96,8 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 //-----------------------------------------------------------------
-//EMAIL-Configurazione SMTP per GMAIL
-//Dati sentibili in appsetting.Development.json -gitignore 
+//EMAIL-SMTP Configuration for GMAIL
+//Sensitive data in appsettings.Development.json -gitignore
 var emailConfig = builder.Configuration.GetSection("FluentEmail");
 
 builder.Services

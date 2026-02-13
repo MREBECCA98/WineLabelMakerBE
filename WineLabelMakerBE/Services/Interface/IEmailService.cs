@@ -5,7 +5,7 @@
         //UPDATE ADMIN STATUS
         Task<bool> SendSimpleEmailAsync(string toEmail, string subject, string body);
 
-        //POST FOR COMPLETED, collegato all'id della richiesta
+        //POST FOR COMPLETED BY ID REQUEST
         Task<bool> EmailWithLabelAsync(string toEmail, string subject, string body, string imagePath);
     }
 }

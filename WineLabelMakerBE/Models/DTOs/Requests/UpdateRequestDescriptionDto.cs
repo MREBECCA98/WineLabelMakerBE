@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-//I DTO (Data Transfer Object) vengono utilizzati per trasferire i dati tra client e server
-//Vengono utilizzati per esporre solo i dati necessari per una determinata operazione,
-//nascondendo quelli sensibili o non necessari. 
-//In questo caso, il DTO "UpdateRequestDescriptionDto" rappresenta i dati necessari per aggiornare
-//la descrizione esistente di una richiesta solo all'utente.
+//DTOs (Data Transfer Objects) are used to transfer data between the client and server.
+//They expose only the data needed for a specific operation,
+//hiding sensitive or unnecessary information
+//In this case, the "UpdateRequestDescriptionDto" represents the data needed
+//to update an existing request's description, accessible only to the user
+
 namespace WineLabelMakerBE.Models.DTOs.Requests
 {
     public class UpdateRequestDescriptionDto

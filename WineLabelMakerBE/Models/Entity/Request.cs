@@ -1,29 +1,30 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-//Tabella delle richieste fatte dagli utenti per la creazione di etichette di vino
-//Foreign Key verso User (1 -> N),
-//un utente può fare più richieste (FK nella tabella dei molti)
+//Table of requests made by users for creating wine labels
+//Foreign key to User (1 -> N)
+//A user can make multiple requests (FK on the "many" side)
+
 namespace WineLabelMakerBE.Models.Entity
 {
     public class Request
     {
         [Key]
-        public Guid IdRequest { get; set; } //Primary Key
+        public Guid IdRequest { get; set; }
 
         [Required]
         [MaxLength(5000)]
-        public string Description { get; set; } //Descrizione della richiesta
+        public string Description { get; set; }
 
         [Required]
-        public RequestStatus Status { get; set; } = RequestStatus.Pending; //Stato della richiesta, di default in attesa
+        public RequestStatus Status { get; set; } = RequestStatus.Pending;
 
         [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; //Timestamp di creazione
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public DateTime? UpdatedAt { get; set; } //Timestamp dell'ultimo aggiornamento 
+        public DateTime? UpdatedAt { get; set; }
 
-        public string? UpdatedByUserId { get; set; } //ID dell'utente che ha fatto l'ultimo aggiornamento
+        public string? UpdatedByUserId { get; set; }
 
         //FK User
         [Required]

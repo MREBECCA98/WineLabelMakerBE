@@ -7,9 +7,10 @@ using WineLabelMakerBE.Models.DTOs.Identity.Request;
 using WineLabelMakerBE.Models.DTOs.Identity.Response;
 using WineLabelMakerBE.Models.Entity;
 
-//AspNetUserController viene creato per la registrazione e il login dell'utente
-//Quando l'utente effettua il login, viene generato un token JWT che il client utilizza per autenticarsi
-//negli endpoint protetti dell'applicazione.
+//AspNetUserController is created for user registration and login
+//When the user logs in, a JWT token is generated that the client uses to authenticate
+//to the application's secure endpoints
+
 namespace WineLabelMakerBE.Controllers
 {
     [Route("api/[controller]")]
@@ -83,20 +84,20 @@ namespace WineLabelMakerBE.Controllers
         }
 
 
-        // POST LOGIN 
+        //POST LOGIN 
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginRequestDto loginRequestDto)
         {
             try
             {
-                //Controllo se l'utente esiste
+                //Check if the user exists
                 ApplicationUser user = await _userManager.FindByNameAsync(loginRequestDto.Username);
                 if (user is null)
                 {
                     return BadRequest();
                 }
 
-                //Controllo login 
+                //Login control
                 var result = await _signInManager.PasswordSignInAsync(user, loginRequestDto.Password, false, false);
 
                 if (!result.Succeeded)
@@ -104,10 +105,10 @@ namespace WineLabelMakerBE.Controllers
                     return StatusCode(StatusCodes.Status401Unauthorized);
                 }
 
-                //Ruoli dell'utente
+                //User roles
                 List<string> roles = (await this._userManager.GetRolesAsync(user)).ToList();
 
-                //Creazione claims
+                //Creation of claims
                 List<Claim> userClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -122,7 +123,7 @@ namespace WineLabelMakerBE.Controllers
                     userClaims.Add(new Claim(ClaimTypes.Role, roleName));
                 }
 
-                //Generazione token JWT
+                //JWT Token Generation
                 var key = System.Text.Encoding.UTF8.GetBytes(_configuration["Jwt:SecurityKey"]);
                 SigningCredentials cred = new SigningCredentials(
                     new SymmetricSecurityKey(key),
@@ -153,8 +154,6 @@ namespace WineLabelMakerBE.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-
         }
     }
 }

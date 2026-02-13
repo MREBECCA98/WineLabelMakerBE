@@ -4,10 +4,11 @@ using WineLabelMakerBE.Models.DTOs.Email;
 using WineLabelMakerBE.Models.Entity;
 using WineLabelMakerBE.Services.Interface;
 
-//Questo controller è accessibile solo all'Admin.
-//Permette di inviare l'email relativa a una richiesta specifica quando lo stato è "Completed",
-//allegando l'immagine dell'etichetta creata.
-//E permette di poter inviare un'email personalizzata per lo stato "QuoteSent" per l'invio del preventivo
+//This controller is accessible only to Admins.
+//It allows sending an email for a specific request when the status is "Completed",
+//attaching the created label image.
+//It also allows sending a custom email when the status is "QuoteSent" to deliver the quote.
+
 namespace WineLabelMakerBE.Controllers
 {
     [Route("api/[controller]")]
@@ -15,7 +16,6 @@ namespace WineLabelMakerBE.Controllers
     [Authorize(Roles = "Admin")]
     public class EmailController : ControllerBase
     {
-        //Iniezione dell'interfaccia per la gestione delle email in base alla richiesta
         private readonly IEmailService _emailService;
         private readonly IRequestService _requestService;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -30,7 +30,7 @@ namespace WineLabelMakerBE.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        //POST FOR COMPLETED, collegato all'id della richiesta
+        //POST FOR COMPLETED BY REQUEST ID
         [HttpPost("completed")]
         public async Task<IActionResult> SendEmail(EmailRequestDto dto)
         {
@@ -38,7 +38,7 @@ namespace WineLabelMakerBE.Controllers
                 return BadRequest(ModelState);
             try
             {
-                //ID della RICHIESTA
+                //Request ID
                 var request = await _requestService.GetRequestsByIdAsync(dto.RequestId);
                 if (request == null)
                     return NotFound("Richiesta non trovata.");
@@ -46,17 +46,17 @@ namespace WineLabelMakerBE.Controllers
                 if (request.Status != RequestStatus.Completed)
                     return BadRequest("L'email con allegato può essere inviata solo per richieste completate.");
 
-                //Email da inviare a chi ha fatto la richiesta 
+
                 string toEmail = request.User.Email;
 
-                //Traduzione dell'enum
+                //Enum
                 string statusIT = request.Status switch
                 {
                     RequestStatus.Completed => "Completata",
 
                 };
 
-                //Subject e body default per l'email status "Completed"
+                //Subject e body default for "Completed" email
                 string subject = $"WINE LABEL MAKER - aggiornamento richiesta: {statusIT}";
                 string body = !string.IsNullOrWhiteSpace(dto.CustomBody) ?
                               dto.CustomBody : $"Gentile {request.User.Name} {request.User.Surname},\n\n" +
@@ -68,7 +68,7 @@ namespace WineLabelMakerBE.Controllers
                                                "Il team di Wine Label Maker";
 
 
-                //Immagine etichetta
+                //Label image
                 if (string.IsNullOrEmpty(dto.ImageName))
                     return BadRequest("Devi fornire il nome dell'immagine da allegare.");
 
@@ -76,7 +76,7 @@ namespace WineLabelMakerBE.Controllers
                 if (!System.IO.File.Exists(imagePath))
                     return NotFound($"Immagine {dto.ImageName} non trovata.");
 
-                //Mail con allegato
+                //Mail with imgage
                 bool invioOk = await _emailService.EmailWithLabelAsync(toEmail, subject, body, imagePath);
 
                 return invioOk ? Ok("Mail inviata con successo!") : StatusCode(500, "Errore nell'invio della mail");
@@ -87,7 +87,7 @@ namespace WineLabelMakerBE.Controllers
             }
         }
 
-        //Aggiunta immagina FE
+        //Adding Front End Image
         [HttpPost("uploadLabel")]
         public async Task<IActionResult> UploadLabel(IFormFile labelImage)
         {
@@ -114,8 +114,8 @@ namespace WineLabelMakerBE.Controllers
         }
 
 
-        //POST FOR QUOTE-SENT - collegata all'id della richiesta
-        //Usato per poter inviare l'email personalizzata per il preventivo della richiesta
+        //POST FOR QUOTE-SENT - linked to the request ID
+        //Used to send the personalized email for the quote request
         [HttpPost("sendQuote")]
         public async Task<IActionResult> SendQuoteEmail(EmailQuoteDto dto)
         {
@@ -123,7 +123,7 @@ namespace WineLabelMakerBE.Controllers
                 return BadRequest(ModelState);
             try
             {
-                //Id della richiesta
+                //Request ID
                 var request = await _requestService.GetRequestsByIdAsync(dto.RequestId);
                 if (request == null)
                     return NotFound("Richiesta non trovata.");
@@ -131,10 +131,10 @@ namespace WineLabelMakerBE.Controllers
                 if (request.Status != RequestStatus.QuoteSent)
                     return BadRequest("L'email del preventivo può essere inviata solo per richieste con status 'QuoteSent'.");
 
-                //Email da inviare a chi ha fatto la richiesta 
+                //Email to be sent to the person who made the request
                 string toEmail = request.User.Email;
 
-                //Traduzione dell'enum
+                //Enum
                 string statusIT = request.Status switch
                 {
                     RequestStatus.QuoteSent => "Preventivo inviato",

@@ -14,8 +14,8 @@ namespace WineLabelMakerBE.Services
             _fluentEmail = fluentEmail;
         }
 
-        //Viene utilizzato all'interno del RequestController al cambio di stato per poter inviare
-        //L'email di default con il relativo body
+        //It is used within the RequestController when the state changes to send
+        //The default email with its body
         public async Task<bool> SendSimpleEmailAsync(string toEmail, string subject, string body)
         {
             var response = await _fluentEmail
@@ -27,7 +27,7 @@ namespace WineLabelMakerBE.Services
             return response.Successful;
         }
 
-        //Email con l'aggiunta dell'immagine dell'etichetta per lo stato "Completed"
+        //Email with added label image for "Completed" status
         public async Task<bool> EmailWithLabelAsync(string toEmail, string subject, string body, string imagePath)
         {
             if (!File.Exists(imagePath))

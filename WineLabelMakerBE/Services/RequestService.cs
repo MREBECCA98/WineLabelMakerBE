@@ -5,11 +5,12 @@ using WineLabelMakerBE.Models.DTOs.Requests;
 using WineLabelMakerBE.Models.Entity;
 using WineLabelMakerBE.Services.Interface;
 
-//Il Service gestisce tutta la logica delle richieste, CRUD (create, read, update, delete)
-//Eredita dall'interfaccia IRequestService, che specifica quali metodi sono disponibili
-//per il controller, in modo tale che lavora con i dati senza occuparsi dei dettagli interni.
-//Il Service lavora direttamente con le Entity e non con i DTO, che vengono invece usati dal Controller
-//per comunicare con il client e non esporre dati sensibili.
+//The Service handles all the logic for requests, including CRUD (create, read, update, delete)
+//It implements the IRequestService interface, which specifies which methods are available
+//for the controller, so that it works with the data without worrying about internal details.
+//The Service works directly with Entities and not DTOs, which are used by the Controller
+//to communicate with the client without exposing sensitive data.
+
 namespace WineLabelMakerBE.Services
 {
     public class RequestService : IRequestService

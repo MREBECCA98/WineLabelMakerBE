@@ -1,4 +1,5 @@
-﻿//Stato del ciclo di vita di una richiesta (in attesa, in corso, preventivo, pagamento confermato, completata, rifiutata)
+﻿
+//Lifecycle status of a request (pending, in progress, quote, payment confirmed, completed, rejected)
 namespace WineLabelMakerBE.Models.Entity
 {
     public enum RequestStatus

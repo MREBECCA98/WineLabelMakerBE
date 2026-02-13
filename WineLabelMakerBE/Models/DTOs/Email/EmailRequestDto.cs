@@ -1,17 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-//DTO utilizzato per inviare un'email relativa a una richiesta completata.
-//L'email verrà inviata solo se lo status della richiesta è "Completed".
-//CustomBody permette di specificare un testo personalizzato se non viene specificato (EmailService)
+//DTO used to send an email for a completed request
+//The email is sent only when the request status is "Completed"
+//CustomBody allows specifying custom text (if none is provided, a default from EmailService is used) 
+//and a label image can be attached (required)
+
 namespace WineLabelMakerBE.Models.DTOs.Email
 {
     public class EmailRequestDto
     {
         [Required]
-        public Guid RequestId { get; set; }   //ID della richiesta
+        public Guid RequestId { get; set; }
 
         public string? CustomBody { get; set; }
         [Required]
-        public string ImageName { get; set; }  //solo per Completed
+        public string ImageName { get; set; }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using WineLabelMakerBE.Models.Entity;
 
-//Utilizzo della classe DbSeader per la creazione dell'admin
-//DbSeeder serve a creare automaticamente dati iniziali nel database quando l'app parte
-//Funziona grazie ai servizi di Identity e viene eseguito all'avvio dell'app tramite Program.cs.
-//Dati sentibili in appsetting.Development.json- gitignore 
+//Using the DbSeader class to create the admin
+//DbSeeder is used to automatically create initial data in the database when the app starts
+//It works using Identity Services and is executed at app startup via Program.cs
+//Sensitive data in appsettings.Development.json - gitignore
+
 namespace WineLabelMakerBE.Models.Data
 {
     public static class DbSeader

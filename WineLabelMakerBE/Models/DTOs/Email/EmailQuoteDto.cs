@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-//DTO utilizzato per inviare un'email relativa al preventivo per l'etichetta.
-//L'email verrà inviata solo per lo status QuoteSent.
+//DTO used to send a quote email for the label
+//The email will only be sent for the QuoteSent status
+
 namespace WineLabelMakerBE.Models.DTOs.Email
 {
     public class EmailQuoteDto

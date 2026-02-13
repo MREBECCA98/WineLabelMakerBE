@@ -1,9 +1,10 @@
 ﻿using WineLabelMakerBE.Models.DTOs.Requests;
 using WineLabelMakerBE.Models.Entity;
 
-//L'interfaccia IRequestService definisce i metodi disponibili per il Service delle richieste.
-//Serve come "contratto" tra Controller e Service, così il Controller sa quali operazioni può eseguire
-//senza conoscere i dettagli interni della logica, mentre il Service implementa l'interfaccia
+//IRequestService defines the available methods for the Request Service
+//Acts as a contract between Controller and Service, so the Controller knows
+//which operations it can perform without needing to know internal logic
+
 namespace WineLabelMakerBE.Services.Interface
 {
     public interface IRequestService

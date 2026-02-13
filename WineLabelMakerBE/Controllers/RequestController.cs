@@ -4,19 +4,20 @@ using WineLabelMakerBE.Models.DTOs.Requests;
 using WineLabelMakerBE.Models.Entity;
 using WineLabelMakerBE.Services.Interface;
 
-//Il Controller fa da filtro tra le richieste del client e le risposte del server.
-//Riceve le richieste dal client, passa i dati al service che gestisce la logica,
-//e infine restituisce al client solo le informazioni necessarie tramite i DTO,
-//per non esporre dati sensibili.
-//In questo caso, si tratta di un Controller per le richieste/descrizioni del prodotto
-//che il client invia per mettersi in contatto con l'azienda.
+//The Controller acts as a filter between client requests and server responses
+//It receives requests from the client, passes the data to the service that handles the logic,
+//and finally returns to the client only the necessary information via DTOs,
+//so as not to expose sensitive data
+//In this case, it is a Controller for product requests/descriptions
+//that the client sends to contact the company
+
 namespace WineLabelMakerBE.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class RequestController : ControllerBase
     {
-        //Iniezione dell'interfaccia per la gestione delle richieste 
+
         private readonly IRequestService _requestService;
         private readonly IEmailService _emailService;
 
@@ -27,9 +28,9 @@ namespace WineLabelMakerBE.Controllers
         }
 
         //GET ALL REQUESTS AS NO TRACKING
-        //Questo endpoint restituisce tutte le richieste filtrate in base al ruolo dell'utente:
-        //-L'admin vede tutte le richieste di tutti gli utenti
-        //-L'user vede solo le proprie richieste
+        //This endpoint returns all requests filtered by user role:
+        //-The admin sees all requests from all users
+        //-The user sees only their own requests
         [HttpGet("allRequest")]
         [Authorize]
         public async Task<ActionResult<IEnumerable<GetRequestDto>>> GetAllRequests()
@@ -63,9 +64,9 @@ namespace WineLabelMakerBE.Controllers
         }
 
         //GET REQUEST BY ID AS NO TRACKING
-        //Questo endpoint restituisce una singola richiesta filtrata in base al ruolo dell'utente:
-        //-L'admin può vedere qualsiasi richiesta
-        //-L'user può vedere solo le proprie richieste
+        //This endpoint returns a single request filtered by the user's role:
+        //-Admin can see any request
+        //-User can only see their own requests
         [HttpGet("requestById/{id:guid}")]
         [Authorize]
         public async Task<ActionResult<GetRequestDto>> GetRequestById(Guid id)
@@ -159,8 +160,8 @@ namespace WineLabelMakerBE.Controllers
         }
 
         //UPDATE CLIENT DESCRIPTION
-        //Questo endpoint è accessibile solo all'user
-        //Permette all'utente di modificare la richiesta già esistente 
+        //This endpoint is accessible only to the user
+        //Allows the user to modify an existing request
         [HttpPut("updateClient/{id:guid}")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateRequestDescription(Guid id, UpdateRequestDescriptionDto descriptionDto)
@@ -204,10 +205,10 @@ namespace WineLabelMakerBE.Controllers
 
 
         //UPDATE ADMIN STATUS
-        //Questo endpoint è accessibile solo all'admin
-        //Permette all'admin di modificare lo stato della richiesta
-        //(in attesa, in lavorazione, preventivo inviato, pagamento completato, completata, rifiutata)
-        //E invia un'email di default in base allo stato cambiato
+        //This endpoint is accessible only to the admin
+        //Allows the admin to change the status of the request
+        //(pending, in progress, quote sent, payment completed, completed, rejected)
+        //And sends a default email based on the changed status
         [HttpPut("updateAdmin/{id:guid}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateRequestStatus(Guid id, UpdateRequestStatusDto statusDto)
@@ -229,7 +230,7 @@ namespace WineLabelMakerBE.Controllers
                     return BadRequest("Impossibile aggiornare lo stato");
 
 
-                //EMAIL DI DEFAULT IN BASE AL CAMBIO DI STATO 
+                //EMAIL DEFAULT
                 //--------------------------------------------------------------------------------------
                 string statusIT = request.Status switch
                 {
@@ -268,7 +269,8 @@ namespace WineLabelMakerBE.Controllers
 
                 };
 
-                //Se il body e null non inviare la mail
+
+                //If the body is null, do not send the emai
                 if (!string.IsNullOrEmpty(body))
                 {
                     await _emailService.SendSimpleEmailAsync(request.User.Email, subject, body);
@@ -297,9 +299,9 @@ namespace WineLabelMakerBE.Controllers
         }
 
         //DELETE REQUEST
-        //Questo endpoint permette di eliminare le richieste già esistenti in base al ruolo dell'utente:
-        //-L'admin può cancellare le richieste di tutti gli utenti
-        //-L'user può cancellare solo le proprie richieste
+        //This endpoint allows you to delete existing requests based on the user's role:
+        //-The admin can delete requests from all users
+        //-The user can only delete their own requests
         [HttpDelete("deleteRequest/{id:guid}")]
         [Authorize]
         public async Task<IActionResult> DeleteRequest(Guid id)

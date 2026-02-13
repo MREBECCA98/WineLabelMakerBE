@@ -2,18 +2,19 @@
 using Microsoft.EntityFrameworkCore;
 using WineLabelMakerBE.Models.Entity;
 
-//ApplicationDbContext è la classe che gestisce il database dell'applicazione
-//Eredita da IdentityDbContext perchè include tutto il necessario per utenti e ruoli
+//ApplicationDbContext is the class that manages the application's database
+//It inherits from IdentityDbContext because it includes everything needed for users and roles
+
 namespace WineLabelMakerBE.Models.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        //DbSet viene utilizzato per inserire le entità nel database
+
         public DbSet<Request> Requests { get; set; }
         //public DbSet<Message> Messages { get; set; }
         public DbSet<ApplicationUser> AspNetUsers { get; set; }
 
-        //Costruttore che accetta le opzioni del contesto e le passa alla classe base DbContext
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
