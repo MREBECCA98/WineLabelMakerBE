@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //DBCONTEXT CONFIGURATION WITH SQL SERVER
 builder.Services.AddDbContext<ApplicationDbContext>(
-    option => option.UseSqlServer(
+    option => option.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection"))
     );
 
