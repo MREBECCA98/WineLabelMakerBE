@@ -49,7 +49,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowLocalhost5173", builder =>
     {
         builder
-            .WithOrigins("http://localhost:5173")
+            .AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -121,6 +121,7 @@ builder.Services
 
 
 var app = builder.Build();
+app.UseCors("AllowLocalhost5173");
 
 //DB SEADER
 await DbSeader.SeedAsync(app.Services);
