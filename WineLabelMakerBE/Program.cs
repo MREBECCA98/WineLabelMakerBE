@@ -144,7 +144,7 @@ if (app.Environment.IsDevelopment())
 //    app.UseHsts();
 //}
 
-app.UseHttpsRedirection();
+//app.usehttpsredirection();
 
 app.UseCors("AllowLocalhost5173");
 
