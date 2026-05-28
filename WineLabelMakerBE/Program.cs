@@ -124,8 +124,15 @@ var app = builder.Build();
 app.UseCors("AllowLocalhost5173");
 
 //DB SEADER
-await DbSeader.SeedAsync(app.Services);
-
+try
+{
+    await DbSeader.SeedAsync(app.Services);
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "Errore durante il seeding del database");
+}
 //Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
