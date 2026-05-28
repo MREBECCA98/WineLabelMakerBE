@@ -134,11 +134,11 @@ catch (Exception ex)
     logger.LogError(ex, "Errore durante il seeding del database");
 }
 //Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-app.UseSwagger();
-app.UseSwaggerUI();
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 //else
 //{
 //    app.UseHsts();
