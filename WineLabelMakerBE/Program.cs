@@ -98,63 +98,27 @@ builder.Services.AddSwaggerGen(option =>
 //-----------------------------------------------------------------
 //EMAIL-SMTP Configuration for GMAIL
 //Sensitive data in appsettings.Development.json -gitignore
-//var emailConfig = builder.Configuration.GetSection("FluentEmail");
-
-//builder.Services
-//    .AddFluentEmail(
-//        emailConfig["FromEmail"],
-//        emailConfig["FromName"]
-//    )
-//    .AddRazorRenderer()
-//    .AddSmtpSender(new SmtpClient
-//    {
-//        Host = emailConfig["Smtp:Host"],
-//        Port = int.Parse(emailConfig["Smtp:Port"]),
-//        EnableSsl = bool.Parse(emailConfig["Smtp:EnableSsl"]),
-//        Credentials = new NetworkCredential(
-//            emailConfig["Smtp:Username"],
-//            emailConfig["Smtp:Password"]
-//        )
-//    });
-
-
 var emailConfig = builder.Configuration.GetSection("FluentEmail");
 
-var fromEmail = emailConfig["FromEmail"] ?? "reb.matarozzo@gmail.com";
-var fromName = emailConfig["FromName"] ?? "Wine Label Maker";
-
 builder.Services
-    .AddFluentEmail(fromEmail, fromName)
+    .AddFluentEmail(
+        emailConfig["FromEmail"],
+        emailConfig["FromName"]
+    )
     .AddRazorRenderer()
-    .AddSmtpSender(() =>
+    .AddSmtpSender(new SmtpClient
     {
-        var host = emailConfig["Smtp:Host"] ?? "smtp.gmail.com";
-        var portStr = emailConfig["Smtp:Port"];
-        var port = string.IsNullOrEmpty(portStr) ? 465 : int.Parse(portStr);
-
-        var username = emailConfig["Smtp:Username"];
-        var password = emailConfig["Smtp:Password"];
-
-        var client = new SmtpClient(host, port)
-        {
-            UseDefaultCredentials = false,
-            Credentials = new NetworkCredential(username, password)
-        };
-
-
-        if (port == 465)
-        {
-            client.EnableSsl = true;
-            ServicePointManager.ServerCertificateValidationCallback =
-                (sender, certificate, chain, sslPolicyErrors) => true;
-        }
-        else
-        {
-            client.EnableSsl = true;
-        }
-
-        return client;
+        Host = emailConfig["Smtp:Host"],
+        Port = int.Parse(emailConfig["Smtp:Port"]),
+        EnableSsl = bool.Parse(emailConfig["Smtp:EnableSsl"]),
+        Credentials = new NetworkCredential(
+            emailConfig["Smtp:Username"],
+            emailConfig["Smtp:Password"]
+        )
     });
+
+
+
 //-----------------------------------------------------------------
 
 
