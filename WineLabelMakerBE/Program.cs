@@ -119,51 +119,34 @@ builder.Services
 
 //-----------------------------------------------------------------
 
+
 var app = builder.Build();
 app.UseCors("AllowLocalhost5173");
 
-//DB SEADER + FORZATURA ADMIN PER REBECCA
+//DB SEADER
 try
 {
-    // Esegue il tuo seeder originale
     await DbSeader.SeedAsync(app.Services);
-
-    // Forza l'assegnazione del ruolo Admin a reb.matarozzo@gmail.com
-    using (var scope = app.Services.CreateScope())
-    {
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
-        // 1. Assicuriamoci che il ruolo "Admin" esista nel DB di Render
-        if (!await roleManager.RoleExistsAsync("Admin"))
-        {
-            await roleManager.CreateAsync(new IdentityRole("Admin"));
-        }
-
-        // 2. Cerchiamo il tuo utente nel database online
-        var user = await userManager.FindByEmailAsync("reb.matarozzo@gmail.com");
-        if (user != null)
-        {
-            // 3. Se l'utente esiste ma non è Admin, gli diamo il ruolo
-            if (!await userManager.IsInRoleAsync(user, "Admin"))
-            {
-                await userManager.AddToRoleAsync(user, "Admin");
-            }
-        }
-    }
 }
 catch (Exception ex)
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    logger.LogError(ex, "Errore durante il seeding del database o assegnazione Admin");
+    logger.LogError(ex, "Errore durante il seeding del database");
 }
-
 //Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//else
+//{
+//    app.UseHsts();
+//}
+
+//app.usehttpsredirection();
+
+app.UseCors("AllowLocalhost5173");
 
 app.UseAuthentication();
 
@@ -181,48 +164,3 @@ catch (Exception ex)
     logger.LogError(ex, "Errore fatale durante app.Run()");
     throw;
 }
-
-//var app = builder.Build();
-//app.UseCors("AllowLocalhost5173");
-
-////DB SEADER
-//try
-//{
-//    await DbSeader.SeedAsync(app.Services);
-//}
-//catch (Exception ex)
-//{
-//    var logger = app.Services.GetRequiredService<ILogger<Program>>();
-//    logger.LogError(ex, "Errore durante il seeding del database");
-//}
-////Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
-////else
-////{
-////    app.UseHsts();
-////}
-
-////app.usehttpsredirection();
-
-//app.UseCors("AllowLocalhost5173");
-
-//app.UseAuthentication();
-
-//app.UseAuthorization();
-
-//app.MapControllers();
-
-//try
-//{
-//    app.Run();
-//}
-//catch (Exception ex)
-//{
-//    var logger = app.Services.GetRequiredService<ILogger<Program>>();
-//    logger.LogError(ex, "Errore fatale durante app.Run()");
-//    throw;
-//}
