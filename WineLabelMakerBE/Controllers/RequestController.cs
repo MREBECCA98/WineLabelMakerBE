@@ -273,7 +273,17 @@ namespace WineLabelMakerBE.Controllers
                 //If the body is null, do not send the emai
                 if (!string.IsNullOrEmpty(body))
                 {
-                    await _emailService.SendSimpleEmailAsync(request.User.Email, subject, body);
+                    try
+                    {
+                        await _emailService.SendSimpleEmailAsync(request.User.Email, subject, body);
+                    }
+                    catch (Exception mailEx)
+                    {
+                        //Se Google blocca l'email, il server NON va in crash! 
+                        //Scrive l'errore nei log di Render ma lascia che il sito web continui a funzionare.
+                        var logger = HttpContext.RequestServices.GetRequiredService<ILogger<RequestController>>();
+                        logger.LogError(mailEx, $"L'email non è partita a causa dei blocchi di sicurezza di Google, ma lo stato sul DB è stato aggiornato.");
+                    }
                 }
 
                 //--------------------------------------------------------------------------------------
