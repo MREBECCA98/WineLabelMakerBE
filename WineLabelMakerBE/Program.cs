@@ -128,25 +128,33 @@ builder.Services
     .AddRazorRenderer()
     .AddSmtpSender(() =>
     {
-
         var host = emailConfig["Smtp:Host"] ?? "smtp.gmail.com";
         var portStr = emailConfig["Smtp:Port"];
-        var port = string.IsNullOrEmpty(portStr) ? 587 : int.Parse(portStr);
-
-        var enableSslStr = emailConfig["Smtp:EnableSsl"];
-        var enableSsl = string.IsNullOrEmpty(enableSslStr) || bool.Parse(enableSslStr);
+        var port = string.IsNullOrEmpty(portStr) ? 465 : int.Parse(portStr);
 
         var username = emailConfig["Smtp:Username"];
         var password = emailConfig["Smtp:Password"];
 
-        return new SmtpClient(host, port)
+        var client = new SmtpClient(host, port)
         {
-            EnableSsl = enableSsl,
             UseDefaultCredentials = false,
             Credentials = new NetworkCredential(username, password)
         };
-    });
 
+
+        if (port == 465)
+        {
+            client.EnableSsl = true;
+            ServicePointManager.ServerCertificateValidationCallback =
+                (sender, certificate, chain, sslPolicyErrors) => true;
+        }
+        else
+        {
+            client.EnableSsl = true;
+        }
+
+        return client;
+    });
 //-----------------------------------------------------------------
 
 
