@@ -15,7 +15,7 @@ namespace WineLabelMakerBE.Services
         public async Task<bool> SendSimpleEmailAsync(string toEmail, string subject, string body)
         {
             var message = new EmailMessage();
-            message.From = "Wine Label Maker <onboarding@resend.dev>";
+            message.From = "Wine Label Maker <noreply@winelabelmaker.com>";
             message.To.Add(toEmail);
             message.Subject = subject;
             message.TextBody = body;
@@ -29,7 +29,7 @@ namespace WineLabelMakerBE.Services
             if (!File.Exists(imagePath)) return false;
 
             var message = new EmailMessage();
-            message.From = "Wine Label Maker <onboarding@resend.dev>";
+            message.From = "Wine Label Maker <noreply@winelabelmaker.com>";
             message.To.Add(toEmail);
             message.Subject = subject;
             message.TextBody = body;
