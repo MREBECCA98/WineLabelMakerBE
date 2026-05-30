@@ -2,6 +2,7 @@
 using FluentEmail.Core;
 using FluentEmail.Core.Models;
 using WineLabelMakerBE.Services.Interface;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WineLabelMakerBE.Services
 {
@@ -28,7 +29,8 @@ namespace WineLabelMakerBE.Services
             {
                 // Log dell'errore esatto
                 var errors = string.Join(", ", response.ErrorMessages);
-                throw new Exception($"Errore invio email: {errors}");
+                Console.WriteLine($"Errore email: {errors}");
+                return false;
             }
 
             return response.Successful;
@@ -38,6 +40,8 @@ namespace WineLabelMakerBE.Services
         public async Task<bool> EmailWithLabelAsync(string toEmail, string subject, string body, string imagePath)
         {
             if (!File.Exists(imagePath))
+
+
                 return false;
 
             var response = await _fluentEmail

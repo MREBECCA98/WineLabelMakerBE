@@ -123,7 +123,7 @@ builder.Services
 
 
 var app = builder.Build();
-app.UseCors("AllowLocalhost5173");
+
 
 //DB SEADER
 try

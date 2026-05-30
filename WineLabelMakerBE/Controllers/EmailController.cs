@@ -83,7 +83,8 @@ namespace WineLabelMakerBE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Errore interno: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+        $"Errore interno: {ex.Message} | Inner: {ex.InnerException?.Message}");
             }
         }
 
