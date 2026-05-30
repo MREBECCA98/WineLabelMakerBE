@@ -1,64 +1,41 @@
-﻿//Utilizza le classi principali di FluentEmail (IFluentEmail-> metodi da poter usare)
-using FluentEmail.Core;
-using FluentEmail.Core.Models;
+﻿using Resend;
 using WineLabelMakerBE.Services.Interface;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WineLabelMakerBE.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly IFluentEmail _fluentEmail;
+        private readonly IResend _resend;
 
-        public EmailService(IFluentEmail fluentEmail)
+        public EmailService(IResend resend)
         {
-            _fluentEmail = fluentEmail;
+            _resend = resend;
         }
 
-        //It is used within the RequestController when the state changes to send
-        //The default email with its body
         public async Task<bool> SendSimpleEmailAsync(string toEmail, string subject, string body)
         {
-            var response = await _fluentEmail
-                .To(toEmail)
-                .Subject(subject)
-                .Body(body, isHtml: false)
-                .SendAsync();
+            var message = new EmailMessage();
+            message.From = "Wine Label Maker <onboarding@resend.dev>";
+            message.To.Add(toEmail);
+            message.Subject = subject;
+            message.TextBody = body;
 
-            if (!response.Successful)
-            {
-                // Log dell'errore esatto
-                var errors = string.Join(", ", response.ErrorMessages);
-                Console.WriteLine($"Errore email: {errors}");
-                return false;
-            }
-
-            return response.Successful;
+            var response = await _resend.EmailSendAsync(message);
+            return response != null;
         }
 
-        //Email with added label image for "Completed" status
         public async Task<bool> EmailWithLabelAsync(string toEmail, string subject, string body, string imagePath)
         {
-            if (!File.Exists(imagePath))
+            if (!File.Exists(imagePath)) return false;
 
+            var message = new EmailMessage();
+            message.From = "Wine Label Maker <onboarding@resend.dev>";
+            message.To.Add(toEmail);
+            message.Subject = subject;
+            message.TextBody = body;
 
-                return false;
-
-            var response = await _fluentEmail
-                .To(toEmail)
-                .Subject(subject)
-                .Body(body, isHtml: false)
-                .Attach(new Attachment
-                {
-                    Filename = Path.GetFileName(imagePath),
-                    Data = new MemoryStream(await File.ReadAllBytesAsync(imagePath)),
-                    ContentType = "image/png"
-                })
-                .SendAsync();
-
-            return response.Successful;
+            var response = await _resend.EmailSendAsync(message);
+            return response != null;
         }
     }
 }
-
-

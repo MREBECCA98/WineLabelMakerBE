@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Net;
-using System.Net.Mail;
+using Resend;
 using System.Text;
 using WineLabelMakerBE.Models.Data;
 using WineLabelMakerBE.Models.Entity;
@@ -98,23 +97,8 @@ builder.Services.AddSwaggerGen(option =>
 //-----------------------------------------------------------------
 //EMAIL-SMTP Configuration for GMAIL
 //Sensitive data in appsettings.Development.json -gitignore
-var emailConfig = builder.Configuration.GetSection("FluentEmail");
-
-
-builder.Services
-.AddFluentEmail(
-    emailConfig["FromEmail"],
-    emailConfig["FromName"]
-)
-.AddRazorRenderer()
-.AddSmtpSender(
-    emailConfig["Smtp:Host"],
-    int.Parse(emailConfig["Smtp:Port"]),
-    emailConfig["Smtp:Username"],
-    emailConfig["Smtp:Password"]
-);
-
-
+builder.Services.AddResend(options =>
+    options.ApiToken = builder.Configuration["Resend:ApiKey"]);
 
 //-----------------------------------------------------------------
 
@@ -163,3 +147,6 @@ catch (Exception ex)
     logger.LogError(ex, "Errore fatale durante app.Run()");
     throw;
 }
+
+
+
