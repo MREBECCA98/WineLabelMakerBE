@@ -100,22 +100,19 @@ builder.Services.AddSwaggerGen(option =>
 //Sensitive data in appsettings.Development.json -gitignore
 var emailConfig = builder.Configuration.GetSection("FluentEmail");
 
+
 builder.Services
-    .AddFluentEmail(
-        emailConfig["FromEmail"],
-        emailConfig["FromName"]
-    )
-    .AddRazorRenderer()
-    .AddSmtpSender(new SmtpClient
-    {
-        Host = emailConfig["Smtp:Host"],
-        Port = int.Parse(emailConfig["Smtp:Port"]),
-        EnableSsl = bool.Parse(emailConfig["Smtp:EnableSsl"]),
-        Credentials = new NetworkCredential(
-            emailConfig["Smtp:Username"],
-            emailConfig["Smtp:Password"]
-        )
-    });
+.AddFluentEmail(
+    emailConfig["FromEmail"],
+    emailConfig["FromName"]
+)
+.AddRazorRenderer()
+.AddSmtpSender(
+    emailConfig["Smtp:Host"],
+    int.Parse(emailConfig["Smtp:Port"]),
+    emailConfig["Smtp:Username"],
+    emailConfig["Smtp:Password"]
+);
 
 
 
