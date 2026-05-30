@@ -24,6 +24,13 @@ namespace WineLabelMakerBE.Services
                 .Body(body, isHtml: false)
                 .SendAsync();
 
+            if (!response.Successful)
+            {
+                // Log dell'errore esatto
+                var errors = string.Join(", ", response.ErrorMessages);
+                throw new Exception($"Errore invio email: {errors}");
+            }
+
             return response.Successful;
         }
 
