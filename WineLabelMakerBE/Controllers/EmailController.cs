@@ -73,6 +73,9 @@ namespace WineLabelMakerBE.Controllers
                     return BadRequest("Devi fornire il nome dell'immagine da allegare.");
 
                 string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "labels", dto.ImageName);
+                Console.WriteLine("Cerco il file qui: " + imagePath);
+
+
                 if (!System.IO.File.Exists(imagePath))
                     return NotFound($"Immagine {dto.ImageName} non trovata.");
 
