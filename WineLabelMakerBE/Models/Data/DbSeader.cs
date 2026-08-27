@@ -46,11 +46,12 @@ namespace WineLabelMakerBE.Models.Data
 
                 await userManager.CreateAsync(user, password);
 
-                if (!await userManager.IsInRoleAsync(user, "Admin"))
-                {
-                    await userManager.AddToRoleAsync(user, "Admin");
-                }
 
+
+            }
+            if (!await userManager.IsInRoleAsync(user, "Admin"))
+            {
+                await userManager.AddToRoleAsync(user, "Admin");
             }
         }
     }
