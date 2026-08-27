@@ -14,10 +14,18 @@ using WineLabelMakerBE.Services.Interface;
 var builder = WebApplication.CreateBuilder(args);
 
 //DBCONTEXT CONFIGURATION WITH SQL SERVER
+//builder.Services.AddDbContext<ApplicationDbContext>(
+//    options => options.UseNpgsql(
+//        builder.Configuration.GetConnectionString("DefaultConnection"))
+//    );
+var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+                    ?? Environment.GetEnvironmentVariable("DATABASE_URL")
+                    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+// DBCONTEXT CONFIGURATION
 builder.Services.AddDbContext<ApplicationDbContext>(
-    options => options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"))
-    );
+    options => options.UseNpgsql(connectionString)
+);
 
 //SERVICE
 builder.Services.AddScoped<IRequestService, RequestService>();
