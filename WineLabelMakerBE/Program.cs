@@ -108,15 +108,34 @@ var app = builder.Build();
 
 
 //DB SEADER
-try
+//try
+//{
+//    await DbSeader.SeedAsync(app.Services);
+//}
+//catch (Exception ex)
+//{
+//    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+//    logger.LogError(ex, "Errore durante il seeding del database");
+//}
+using (var scope = app.Services.CreateScope())
 {
-    await DbSeader.SeedAsync(app.Services);
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<ApplicationDbContext>();
+        dbContext.Database.Migrate();
+
+        await DbSeader.SeedAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Errore durante il seeding del database");
+    }
 }
-catch (Exception ex)
-{
-    var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    logger.LogError(ex, "Errore durante il seeding del database");
-}
+
+
+
 //Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
